@@ -1,6 +1,6 @@
 import React from "react";
 import "./style.css";
-import {Card, ListGroup} from "react-bootstrap";
+import {Card, Col, Container, ListGroup, Row} from "react-bootstrap";
 
 interface Meeting {
     date: Date;
@@ -23,12 +23,21 @@ const meetings: Meeting[] = [
         date: new Date(),
         place: "Москва, НИУ ВШЭ",
         person: "Лимонов Алексей"
+    },
+    {
+        date: new Date(),
+        place: "Москва, НИУ ВШЭ",
+        person: "Лимонов Алексей"
+    },
+    {
+        date: new Date(),
+        place: "Москва, НИУ ВШЭ",
+        person: "Лимонов Алексей"
     }
 ]
 
 const MeetingComponent = (meeting: Meeting) => {
-    // @ts-ignore
-    return <Card>
+    return <Card className="MeetingCard">
         <Card.Body>
             <Card.Title>Встреча</Card.Title>
         </Card.Body>
@@ -41,8 +50,9 @@ const MeetingComponent = (meeting: Meeting) => {
 }
 
 export const Meetings = () => {
-    return <div>
-        <div className="MeetingsBlock">Встречи</div>
-        {meetings.map(m => MeetingComponent(m))}
-    </div>
+    return (
+        <div className="MeetingsCardContainer">
+            {meetings.map(m => MeetingComponent(m))}
+        </div>
+    )
 }

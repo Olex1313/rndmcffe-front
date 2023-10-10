@@ -3,11 +3,14 @@ import {Container, Nav, Navbar, NavbarText} from "react-bootstrap";
 import {Profile} from "./Profile";
 import {Subscriptions} from "./Subscriptions";
 import {Meetings} from "./Meetings";
+import {MainPage} from "./MainPage";
 
-type PageState = "profile" | "subscriptions" | "meetings"
+type PageState = "profile" | "subscriptions" | "meetings" | "main-page"
 
 function renderState(state: PageState) {
     switch (state) {
+        case "main-page":
+            return <MainPage/>
         case "profile":
             return <Profile/>;
         case "subscriptions":
@@ -18,13 +21,13 @@ function renderState(state: PageState) {
 }
 
 function App() {
-    const [page, setPage] = useState<PageState>("meetings")
+    const [page, setPage] = useState<PageState>("main-page")
 
     return (
-        <div style={{height: "100%"}}>
+        <div style={{height: "100%", paddingBottom: "60px"}}>
             <Navbar className="bg-body-tertiary">
                 <Container>
-                    <Navbar.Brand href="#home">Rndmcffe</Navbar.Brand>
+                    <Navbar.Brand href="#home" onClick={() => setPage("main-page")}>Rndmcffe</Navbar.Brand>
                     <Navbar.Toggle/>
                     <Nav>
                         <Nav.Link onClick={() => setPage("meetings")}>Встречи</Nav.Link>
@@ -38,8 +41,9 @@ function App() {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <div className="PageContainer">
-                {renderState(page)}
+            {renderState(page)}
+            <div className="PageFooter">
+                © {new Date().getFullYear()} Copyright aalim-corp
             </div>
         </div>
     );

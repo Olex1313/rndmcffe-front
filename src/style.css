@@ -1,3 +1,19 @@
+.MainPageIntro {
+    background-color: lightgray;
+}
+
+.MainPageToMeetings {
+    background-color: floralwhite;
+}
+
+.MeetingCard {
+    padding: 15px 35px;
+    max-width: 400px;
+    border-radius: 25px;
+    align-content: space-between;
+    align-items: center;
+}
+
 .MeetingsBlock {
     border-radius: 30px;
     background-color: cadetblue;
@@ -6,25 +22,32 @@
 .MeetingsCardContainer {
     flex: 90%;
     gap: 30px;
-    margin: 10px;
+    padding: 25px;
+    margin: 25px;
     display: grid;
-    justify-items: center;
     justify-content: space-around;
+    border-radius: 25px;
+    background-color: lightgray;
     grid-template-columns: repeat(2, 1fr);
 }
 
-
-.MeetingCard {
-    padding: 15px 35px;
-    color: cadetblue;
-    background-color: lightblue;
+.MeetingPhotoCardBody {
+    align-content: space-evenly;
 }
 
-.PageContainer {
-    background-color: red;
-    margin: 0 20%;
-    height: 100%;
-    position: absolute;
-    top: 10%;
-    bottom: 50%;
+.MeetingPhotoCarousel {
+    align-content: space-evenly;
+    height: 192px;
+    width: 192px;
+}
+
+.PageFooter {
+    position:fixed;
+    left:0;
+    bottom:0;
+    right:0;
+    align-items: center;
+    background-color: lightgray;
+    text-align: center;
+    vertical-align: middle;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import "./style.css";
-import {Card, Carousel, ListGroup} from "react-bootstrap";
+import {Card, Carousel, Image, ListGroup} from "react-bootstrap";
 
 interface Meeting {
     date: Date;
@@ -36,10 +36,10 @@ const MeetingComponent = (meeting: Meeting) => {
         <Card.Body className="MeetingPhotoCardBody">
             <Carousel interval={null} className="MeetingPhotoCarousel">
                 <Carousel.Item>
-                    <img src="me-img.jpeg"/>
+                    <Image src="me-img.jpeg" className="img"/>
                 </Carousel.Item>
                 <Carousel.Item>
-                    <img src="me-neg-img.jpeg"/>
+                    <Image src="me-neg-img.jpeg" className="img"/>
                 </Carousel.Item>
             </Carousel>
         </Card.Body>

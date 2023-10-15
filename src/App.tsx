@@ -24,7 +24,7 @@ function App() {
     const [page, setPage] = useState<PageState>("main-page")
 
     return (
-        <div style={{height: "100%", paddingBottom: "60px"}}>
+        <div className="MainContainer">
             <Navbar className="bg-body-tertiary">
                 <Container>
                     <Navbar.Brand href="#home" onClick={() => setPage("main-page")}>Rndmcffe</Navbar.Brand>
@@ -36,14 +36,16 @@ function App() {
                     </Nav>
                     <Navbar.Collapse className="justify-content-end">
                         <NavbarText>
-                            ООО Лучший аутсорс
+                            <a href="https://github.com/Olex1313"> ООО Лучший аутсорс </a>
                         </NavbarText>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            {renderState(page)}
+            <Container className="StatePageContainer">
+                {renderState(page)}
+            </Container>
             <div className="PageFooter">
-                © {new Date().getFullYear()} Copyright aalim-corp
+                © {new Date().getFullYear()} <a href="https://github.com/Olex1313"> Copyright aalim-corp </a>
             </div>
         </div>
     );

@@ -3,28 +3,33 @@ import "./style.css";
 import {Card, Carousel, Image, ListGroup} from "react-bootstrap";
 
 interface Meeting {
-    date: Date;
-    place: string;
+    id: number
+    date: Date
+    place: string
     person: string
 }
 
 const meetings: Meeting[] = [
     {
+        id: 1,
         date: new Date(),
         place: "Москва, МИЭМ",
         person: "Лимонов Алексей"
     },
     {
+        id: 2,
         date: new Date(),
         place: "Москва, Китай-Город",
         person: "Лимонов Алексей"
     },
     {
+        id: 3,
         date: new Date(),
         place: "Москва, НИУ ВШЭ",
         person: "Лимонов Алексей"
     },
     {
+        id: 4,
         date: new Date(),
         place: "Москва, НИУ ВШЭ",
         person: "Лимонов Алексей"
@@ -43,7 +48,7 @@ const MeetingComponent = (meeting: Meeting) => {
                 </Carousel.Item>
             </Carousel>
         </Card.Body>
-        <ListGroup>
+        <ListGroup key={meeting.id}>
             <ListGroup.Item>Где: {meeting.place}</ListGroup.Item>
             <ListGroup.Item>Когда: {meeting.date.toDateString()}</ListGroup.Item>
             <ListGroup.Item>С кем: {meeting.person}</ListGroup.Item>

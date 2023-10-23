@@ -43,7 +43,6 @@
     margin: 0 auto;
 
     border-radius: 25px;
-    background-color: lightgray;
 
     display: grid;
     grid-template-columns: repeat(auto-fit, 300px);
@@ -62,7 +61,6 @@
     margin: 0 auto;
 
     border-radius: 25px;
-    background-color: lightgray;
 
     display: grid;
     grid-template-columns: repeat(auto-fit, 300px);
@@ -107,7 +105,6 @@
 }
 
 .ProfileContainer {
-    min-width: 300px;
 }
 
 .PageFooter {
@@ -116,7 +113,6 @@
     bottom:0;
     right:0;
     align-items: center;
-    background-color: lightgray;
     text-align: center;
     vertical-align: middle;
 }

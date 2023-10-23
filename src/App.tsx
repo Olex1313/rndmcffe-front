@@ -1,13 +1,30 @@
 import React, {useState} from 'react';
-import {Container, Nav, Navbar} from "react-bootstrap";
 import {Profile} from "./Profile";
 import {Subscriptions} from "./Subscriptions";
 import {Meetings} from "./Meetings";
 import {MainPage} from "./MainPage";
-import {Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Tooltip} from "@mui/material";
-import {Logout, Settings} from "@mui/icons-material";
+import {
+    Avatar,
+    Box, createTheme,
+    Container,
+    Divider,
+    IconButton,
+    ListItemIcon,
+    Menu,
+    MenuItem,
+    ThemeProvider,
+    Tooltip,
+    useTheme, AppBar, Typography, Stack, Toolbar, Button, PaletteMode, CssBaseline
+} from "@mui/material";
+import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-material";
+import {grey} from "@mui/material/colors";
 
 type PageState = "profile" | "subscriptions" | "meetings" | "main-page"
+
+const ColorModeContext = React.createContext({
+    toggleColorMode: () => {
+    }
+});
 
 function renderState(state: PageState) {
     switch (state) {
@@ -22,8 +39,61 @@ function renderState(state: PageState) {
     }
 }
 
+const getThemeDesign = (mode: PaletteMode) => ({
+    palette: {
+        mode,
+        ...(mode === 'light')
+            ? {
+                // palette values for light mode
+                background: {
+                  primary: '#fff'
+                },
+                text: {
+                    primary: grey[900],
+                    secondary: grey[800],
+                },
+            } :
+            {
+                // palette values for dark mode
+                background: {
+                    primary: '#222222',
+                    paper: grey[700],
+                },
+                text: {
+                    primary: '#cbcbcb',
+                    secondary: grey[500],
+                },
+            }
+    }
+})
+
+export default function ToggleColorMode() {
+    const [mode, setMode] = React.useState<'light' | 'dark'>('light');
+    const colorMode = React.useMemo(
+        () => ({
+            toggleColorMode: () => {
+                setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+            },
+        }),
+        [],
+    );
+
+    const theme = React.useMemo(() => createTheme(getThemeDesign(mode)), [mode]);
+
+    return (
+        <ColorModeContext.Provider value={colorMode}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline/>
+                <App/>
+            </ThemeProvider>
+        </ColorModeContext.Provider>
+    );
+}
+
 function App() {
     const [page, setPage] = useState<PageState>("main-page")
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
 
     function AccountMenu() {
         const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -31,23 +101,24 @@ function App() {
         const handleClick = (event: React.MouseEvent<HTMLElement>) => {
             setAnchorEl(event.currentTarget);
         };
+
         const handleClose = () => {
             setAnchorEl(null);
         };
 
         return (
             <React.Fragment>
-                <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                <Box sx={{display: 'flex', alignItems: 'center', textAlign: 'center'}}>
                     <Tooltip title="Настройки профиля">
                         <IconButton
                             onClick={handleClick}
                             size="small"
-                            sx={{ ml: 2 }}
+                            sx={{ml: 2}}
                             aria-controls={open ? 'account-menu' : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                         >
-                            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                            <Avatar sx={{width: 32, height: 32}}>M</Avatar>
                         </IconButton>
                     </Tooltip>
                 </Box>
@@ -83,22 +154,22 @@ function App() {
                             },
                         },
                     }}
-                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    transformOrigin={{horizontal: 'right', vertical: 'top'}}
+                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 >
                     <MenuItem onClick={() => setPage("profile")}>
-                        <Avatar /> Профиль
+                        <Avatar/> Профиль
                     </MenuItem>
-                    <Divider />
+                    <Divider/>
                     <MenuItem onClick={handleClose}>
                         <ListItemIcon>
-                            <Settings fontSize="small" />
+                            <Settings fontSize="small"/>
                         </ListItemIcon>
                         Настройки приложения
                     </MenuItem>
                     <MenuItem onClick={handleClose}>
                         <ListItemIcon>
-                            <Logout fontSize="small" />
+                            <Logout fontSize="small"/>
                         </ListItemIcon>
                         Выйти
                     </MenuItem>
@@ -108,28 +179,67 @@ function App() {
     }
 
     return (
-        <div className="MainContainer">
-            <Navbar className="bg-body-tertiary">
-                <Container>
-                    <Navbar.Brand href="#home" onClick={() => setPage("main-page")}>Rndmcffe</Navbar.Brand>
-                    <Navbar.Toggle/>
-                    <Nav>
-                        <Nav.Link onClick={() => setPage("meetings")}>Встречи</Nav.Link>
-                        <Nav.Link onClick={() => setPage("subscriptions")}>Подписки</Nav.Link>
-                    </Nav>
-                    <Navbar.Collapse className="justify-content-end">
-                        <Nav.Item>{AccountMenu()}</Nav.Item>
-                    </Navbar.Collapse>
+        <Stack className="MainContainer">
+            <AppBar sx={{flexGrow: 1}} position="static">
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <Coffee sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="#app-bar-with-responsive-menu"
+                            sx={{
+                                mr: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.2rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                            onClick={() => setPage("main-page")}
+                        >
+                            Rndmcffe
+                        </Typography>
+
+                        <Typography
+                            variant="h5"
+                            noWrap
+                            component="a"
+                            href="#app-bar-with-responsive-menu"
+                            sx={{
+                                mr: 2,
+                                display: {xs: 'flex', md: 'none'},
+                                flexGrow: 1,
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            LOGO
+                        </Typography>
+                        <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
+                            <Button sx={{my: 2, color: 'white', display: 'block'}}
+                                    onClick={() => setPage("meetings")}>Встречи</Button>
+                            <Button sx={{my: 2, color: 'white', display: 'block'}}
+                                    onClick={() => setPage("subscriptions")}>Подписки</Button>
+                        </Box>
+                        {AccountMenu()}
+                        <IconButton sx={{ml: 1}} onClick={colorMode.toggleColorMode} color="inherit">
+                            {theme.palette.mode === 'dark' ? <Brightness4/> : <Brightness7/>}
+                        </IconButton>
+                    </Toolbar>
                 </Container>
-            </Navbar>
+            </AppBar>
             <Container className="StatePageContainer">
                 {renderState(page)}
             </Container>
             <div className="PageFooter">
                 © {new Date().getFullYear()} <a href="https://github.com/Olex1313"> Copyright aalim-corp </a>
             </div>
-        </div>
+        </Stack>
     );
 }
-
-export default App;

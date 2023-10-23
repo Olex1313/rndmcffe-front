@@ -180,7 +180,7 @@ function App() {
 
     return (
         <Stack className="MainContainer">
-            <AppBar sx={{flexGrow: 1}} position="static">
+            <AppBar position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <Coffee sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>

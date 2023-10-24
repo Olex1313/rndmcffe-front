@@ -20,7 +20,7 @@ const meetings: Meeting[] = [
     {
         id: 2,
         date: new Date(),
-        place: "Москва, Китай-Город",
+        place: "Москва",
         person: "Лимонов Алексей"
     },
     {
@@ -59,9 +59,9 @@ const MeetingComponent = (meeting: Meeting) => {
         </CardContent>
 
         <CardContent>
-            <Typography>Где: {meeting.place}</Typography>
+            <Typography gutterBottom variant="h5" component="div">{meeting.person}</Typography>
             <Typography>Когда: {meeting.date.toDateString()}</Typography>
-            <Typography>С кем: {meeting.person}</Typography>
+            <Typography>Где: {meeting.place}</Typography>
         </CardContent>
     </Card>
 }

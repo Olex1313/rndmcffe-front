@@ -62,7 +62,7 @@ const VacancyAccordion = (vac: VacancyDescription) => {
 
 const vacancies: VacancyDescription[] = [
     {
-        name: "Разработчик интерфейсов",
+        name: "Button Painter Engineer",
         description: `Мы работаем над созданием таких блоков, как «Врачи» «Курсы», «Приложения»,
                             причастны к развитию пользовательского контента (UGC) в карточке товаров
                             поисковой
@@ -73,7 +73,7 @@ const vacancies: VacancyDescription[] = [
         skills: ["JS", "HTML", "CSS", "React", "Курсы от Skillbox"]
     },
     {
-        name: "Разработчик бекенда",
+        name: "Json Packaging Engineer",
         description: `Мы работаем над созданием таких блоков, как «Врачи» «Курсы», «Приложения»,
                             причастны к развитию пользовательского контента (UGC) в карточке товаров
                             поисковой
@@ -81,10 +81,10 @@ const vacancies: VacancyDescription[] = [
                             а также личного кабинета отзывов.
                             Ещё мы занимаемся развитием публичного профиля и партнёрского обогащённого
                             ответа.`,
-        skills: ["Go", "Rust", "SQL", "gRPC", "Книжка с кабаном"]
+        skills: ["Go", "Rust", "SQL", "gRPC", "Algorithms and Data structures"]
     },
     {
-        name: "Server reboot engineer",
+        name: "Server Reboot Engineer",
         description: `Мы работаем над созданием таких блоков, как «Врачи» «Курсы», «Приложения»,
                             причастны к развитию пользовательского контента (UGC) в карточке товаров
                             поисковой
@@ -98,15 +98,15 @@ const vacancies: VacancyDescription[] = [
 export const ContactsPage = () => {
     return (
         <Stack spacing={2}>
-            <Typography variant="h2">Rndmcffe - это уголок уюта посреди big-tech'а</Typography>
-            <Typography variant="h3">Мы будем рады новым людям в нашей команде</Typography>
+            <Typography variant="h4">Rndmcffe - это уголок уюта посреди big-tech'а</Typography>
+            <Typography variant="h5">Мы будем рады новым людям в нашей команде</Typography>
             <Box sx={{width: "100%"}}>
                 <Grid container justifyContent="center" spacing={3} rowSpacing={2}>
                     <Grid xs={6} item>
                         <Item>
                             <Stack direction="row" spacing={1}>
                                 <Cake sx={{display: {xs: 'none', md: 'flex'}, mr: 1}} style={{fontSize: 60}}/>
-                                <Typography variant="h4" gutterBottom>
+                                <Typography variant="h5" gutterBottom>
                                     Мы - маленькая семья, у нас общие цели и ценности.
                                 </Typography>
                             </Stack>
@@ -116,7 +116,7 @@ export const ContactsPage = () => {
                         <Item>
                             <Stack direction="row" spacing={1}>
                                 <Engineering sx={{display: {xs: 'none', md: 'flex'}, mr: 1}} style={{fontSize: 60}}/>
-                                <Typography variant="h4" gutterBottom>
+                                <Typography variant="h5" gutterBottom>
                                     Мы не используем готовые решения, мы пишем свои!
                                 </Typography>
                             </Stack>
@@ -126,7 +126,7 @@ export const ContactsPage = () => {
                         <Item>
                             <Stack direction="row" spacing={1}>
                                 <Paid sx={{display: {xs: 'none', md: 'flex'}, mr: 1}} style={{fontSize: 60}}/>
-                                <Typography variant="h4" gutterBottom>
+                                <Typography variant="h5" gutterBottom>
                                     Мы предоставляем конкурентную заработную плату
                                 </Typography>
                             </Stack>
@@ -136,7 +136,7 @@ export const ContactsPage = () => {
                         <Item>
                             <Stack direction="row" spacing={1}>
                                 <Terminal sx={{display: {xs: 'none', md: 'flex'}, mr: 1}} style={{fontSize: 60}}/>
-                                <Typography variant="h4" gutterBottom>
+                                <Typography variant="h5" gutterBottom>
                                     Мы работаем без выходных, продуктивность превыше всего!
                                 </Typography>
                             </Stack>
@@ -146,12 +146,12 @@ export const ContactsPage = () => {
             </Box>
             <Box sx={{width: "100%"}}>
                 <Stack spacing={2}>
-                    <Typography variant="h5">
+                    <Typography variant="h6">
                         Кто нам нужен? Мы ищем высококвалифицированные специалисты.
                         Код мы пишем на Rust и React, но это не важно, ведь в наносервисной архитектуре язык не играет
                         роли.
                     </Typography>
-                    <Typography variant="h5">
+                    <Typography variant="h6">
                         Как выяснилось фронтенд можно выучить за неделю, поэтому если вы считаете себя крутым инженером,
                         не смотрите на стек - приходите к нам
                     </Typography>

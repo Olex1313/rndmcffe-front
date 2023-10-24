@@ -15,7 +15,7 @@ import {
     MenuItem,
     ThemeProvider,
     Tooltip,
-    useTheme, AppBar, Typography, Stack, Toolbar, Button, PaletteMode, CssBaseline
+    useTheme, AppBar, Typography, Stack, Toolbar, Button, PaletteMode, CssBaseline, Link
 } from "@mui/material";
 import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-material";
 import {grey} from "@mui/material/colors";
@@ -90,6 +90,19 @@ export default function ToggleColorMode() {
                 <App/>
             </ThemeProvider>
         </ColorModeContext.Provider>
+    );
+}
+
+function Copyright(props: any) {
+    return (
+        <Typography variant="body2" color="background.secondary" align="center" {...props}>
+            {'Copyright © '}
+            <Link color="inherit" href="https://github.com/Olex1313">
+                aalim-corp
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
     );
 }
 
@@ -242,9 +255,10 @@ function App() {
             <Container className="StatePageContainer">
                 {renderState(page)}
             </Container>
-            <div className="PageFooter">
-                © {new Date().getFullYear()} <a href="https://github.com/Olex1313"> Copyright aalim-corp </a>
-            </div>
+            <Copyright sx={{mt: 8, mb: 4}}/>
+            {/*<div className="PageFooter">*/}
+            {/*    © {new Date().getFullYear()} <a href="https://github.com/Olex1313"> Copyright aalim-corp </a>*/}
+            {/*</div>*/}
         </Stack>
     );
 }

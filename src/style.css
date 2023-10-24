@@ -7,7 +7,7 @@
 .img {
     max-width: 100%;
     max-height: 100%;
-    object-fit: scale-down;
+    /* object-fit: scale-down; */
 }
 
 
@@ -108,11 +108,27 @@
 }
 
 .PageFooter {
-    position:fixed;
     left:0;
     bottom:0;
     right:0;
     align-items: center;
     text-align: center;
     vertical-align: middle;
+}
+
+
+
+/* --------------------------- */
+
+.card-modif {
+    width: 20em;
+}
+
+.accordion-button-modif:not(.collapsed) {
+    color: aliceblue;
+    background-color: #1976d2;
+}
+
+.noborder {
+    border: none;
 }

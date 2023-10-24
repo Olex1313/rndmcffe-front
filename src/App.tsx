@@ -3,6 +3,7 @@ import {Profile} from "./Profile";
 import {Subscriptions} from "./Subscriptions";
 import {Meetings} from "./Meetings";
 import {MainPage} from "./MainPage";
+import {ContactsPage} from "./ContactsPage";
 import {
     Avatar,
     Box, createTheme,
@@ -19,7 +20,7 @@ import {
 import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-material";
 import {grey} from "@mui/material/colors";
 
-type PageState = "profile" | "subscriptions" | "meetings" | "main-page"
+type PageState = "profile" | "subscriptions" | "meetings" | "main-page" | "contacts"
 
 const ColorModeContext = React.createContext({
     toggleColorMode: () => {
@@ -36,6 +37,8 @@ function renderState(state: PageState) {
             return <Subscriptions/>;
         case "meetings":
             return <Meetings/>;
+        case "contacts":
+            return <ContactsPage/>
     }
 }
 
@@ -46,7 +49,7 @@ const getThemeDesign = (mode: PaletteMode) => ({
             ? {
                 // palette values for light mode
                 background: {
-                  primary: '#fff'
+                    primary: '#fff'
                 },
                 text: {
                     primary: grey[900],
@@ -226,6 +229,8 @@ function App() {
                                     onClick={() => setPage("meetings")}>Встречи</Button>
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
                                     onClick={() => setPage("subscriptions")}>Подписки</Button>
+                            <Button sx={{my: 2, color: 'white', display: 'block'}}
+                                    onClick={() => setPage("contacts")}>О нас</Button>
                         </Box>
                         {AccountMenu()}
                         <IconButton sx={{ml: 1}} onClick={colorMode.toggleColorMode} color="inherit">

@@ -1,6 +1,7 @@
 import React from "react";
 import "./style.css";
-import {Card, Carousel, Image, ListGroup} from "react-bootstrap";
+import {Card, CardMedia, CardContent, Typography, Box} from "@mui/material";
+import Carousel from "react-material-ui-carousel";
 
 interface Meeting {
     id: number
@@ -38,21 +39,30 @@ const meetings: Meeting[] = [
 
 const MeetingComponent = (meeting: Meeting) => {
     return <Card className="MeetingCard">
-        <Card.Body className="MeetingPhotoCardBody">
-            <Carousel interval={null} className="MeetingPhotoCarousel">
-                <Carousel.Item>
-                    <Image src="me-img.jpeg" className="img"/>
-                </Carousel.Item>
-                <Carousel.Item>
-                    <Image src="me-neg-img.jpeg" className="img"/>
-                </Carousel.Item>
+        <CardContent className="MeetingPhotoCardBody">
+            <Carousel className="MeetingPhotoCarousel" autoPlay={false}>
+                <Box>
+                    <CardMedia
+                        sx={{maxWidth: 345, height: 180, borderRadius: "15px"}}
+                        image="me-img.jpeg"
+                        title="profile"
+                    />
+                </Box>
+                <Box>
+                    <CardMedia
+                        sx={{maxWidth: 345, height: 180, borderRadius: "15px"}}
+                        image="me-neg-img.jpeg"
+                        title="profile"
+                    />
+                </Box>
             </Carousel>
-        </Card.Body>
-        <ListGroup key={meeting.id}>
-            <ListGroup.Item>Где: {meeting.place}</ListGroup.Item>
-            <ListGroup.Item>Когда: {meeting.date.toDateString()}</ListGroup.Item>
-            <ListGroup.Item>С кем: {meeting.person}</ListGroup.Item>
-        </ListGroup>
+        </CardContent>
+
+        <CardContent>
+            <Typography>Где: {meeting.place}</Typography>
+            <Typography>Когда: {meeting.date.toDateString()}</Typography>
+            <Typography>С кем: {meeting.person}</Typography>
+        </CardContent>
     </Card>
 }
 

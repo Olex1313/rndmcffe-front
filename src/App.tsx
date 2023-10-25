@@ -5,6 +5,7 @@ import {Meetings} from "./Meetings";
 import {MainPage} from "./MainPage";
 import {ContactsPage} from "./ContactsPage";
 import {Principles} from "./Principles";
+import {SignInPage} from "./SignInPage"
 import {
     Avatar,
     Box, createTheme,
@@ -20,30 +21,22 @@ import {
 } from "@mui/material";
 import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-material";
 import {grey} from "@mui/material/colors";
+import {RegisterPage} from "./RegisterPage";
 
-type PageState = "profile" | "subscriptions" | "meetings" | "main-page" | "contacts" | "principles"
+type PageState =
+    "profile"
+    | "subscriptions"
+    | "meetings"
+    | "main-page"
+    | "contacts"
+    | "principles"
+    | "signin"
+    | "register"
 
 const ColorModeContext = React.createContext({
     toggleColorMode: () => {
     }
 });
-
-function renderState(state: PageState) {
-    switch (state) {
-        case "main-page":
-            return <MainPage/>
-        case "profile":
-            return <Profile/>;
-        case "subscriptions":
-            return <Subscriptions/>;
-        case "meetings":
-            return <Meetings/>;
-        case "contacts":
-            return <ContactsPage/>
-        case "principles":
-            return <Principles/>
-    }
-}
 
 const getThemeDesign = (mode: PaletteMode) => ({
     palette: {
@@ -113,6 +106,27 @@ function App() {
     const [page, setPage] = useState<PageState>("main-page")
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
+
+    function renderState(state: PageState) {
+        switch (state) {
+            case "main-page":
+                return <MainPage/>
+            case "profile":
+                return <Profile/>;
+            case "subscriptions":
+                return <Subscriptions/>;
+            case "meetings":
+                return <Meetings/>;
+            case "contacts":
+                return <ContactsPage/>
+            case "principles":
+                return <Principles/>
+            case "signin":
+                return <SignInPage onSuccess={() => setPage("profile")} onRegister={() => setPage("register")}/>
+            case "register":
+                return <RegisterPage callback={() => setPage("profile")}/>
+        }
+    }
 
     function AccountMenu() {
         const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -186,7 +200,7 @@ function App() {
                         </ListItemIcon>
                         Настройки приложения
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={() => setPage("signin")}>
                         <ListItemIcon>
                             <Logout fontSize="small"/>
                         </ListItemIcon>

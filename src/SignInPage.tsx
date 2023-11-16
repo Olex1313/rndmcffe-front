@@ -1,13 +1,16 @@
 import React from 'react';
 import {Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, TextField, Typography} from "@mui/material";
+import {DefaultService} from "./api";
 
 const handleSubmit = (event: any) => {
+    console.log('PEPE')
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-        email: data.get("email"),
-        password: data.get("password"),
-    });
+    const res = DefaultService.userLogin({
+        "login": data.get("email") as string,
+        "password": data.get("password") as string
+    })
+    res.then(console.log)
 };
 
 interface SignInCallbacks {
@@ -60,7 +63,7 @@ export class SignInPage extends React.Component<SignInCallbacks> {
                             fullWidth
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
-                            onClick={this.props.onSuccess}
+                            // onClick={this.props.onSuccess}
                         >
                             Войти
                         </Button>

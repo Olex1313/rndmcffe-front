@@ -1,12 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {
     Button,
-    Chip,
-    ListItem,
-    Typography,
+    CardActions,
     CardContent,
+    Chip,
+    CircularProgress,
+    Divider,
     Grid,
-    Stack, List, CardActions, Divider, Paper, CircularProgress
+    List,
+    ListItem,
+    Paper,
+    Stack,
+    Typography
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import {Col, Container, Row} from "react-bootstrap";
@@ -42,28 +47,6 @@ const aalimProfile = {
     rating: 4.9,
     interests: ["C++", "D&D", "Backend", "Распределенные системы"]
 }
-
-const fetchProfile = async (): Promise<ProfileModel> => await DefaultService.getMyProfile().then(
-    res => {
-        return {
-            firstName: res.first_name,
-            lastName: res.last_name,
-            occupation: aalimProfile.occupation,
-            city: aalimProfile.city,
-            image: aalimProfile.image,
-            telegramLogin: res.tg_login,
-            about: aalimProfile.about,
-            meetingsCount: aalimProfile.meetingsCount,
-            coffeeCups: aalimProfile.coffeeCups,
-            rating: aalimProfile.rating,
-            interests: aalimProfile.interests
-        }
-    },
-    err => {
-        console.log("Что-то пошло не так, вот вам тыква...")
-        return aalimProfile
-    }
-)
 
 const ProfileComponent = (userProfile: ProfileModel) =>
     <Grid spacing={2} className="ProfileGrid">
@@ -138,25 +121,38 @@ const ProfileComponent = (userProfile: ProfileModel) =>
 
 export const Profile = () => {
     const [userData, setUserData] = useState<ProfileModel | null>(null)
-    const [state, setState] = useState('')
-    useEffect(() => {
+    const [state, setState] = useState('loading')
+
+    const fetchProfile = () => {
         setState('loading')
-        fetchProfile().then(profile => {
+        DefaultService.getMyProfile().then(res => {
+            setUserData({
+                firstName: res.first_name,
+                lastName: res.last_name,
+                occupation: aalimProfile.occupation,
+                city: aalimProfile.city,
+                image: aalimProfile.image,
+                telegramLogin: res.tg_login,
+                about: aalimProfile.about,
+                meetingsCount: aalimProfile.meetingsCount,
+                coffeeCups: aalimProfile.coffeeCups,
+                rating: aalimProfile.rating,
+                interests: aalimProfile.interests
+            })
+            console.log(userData)
             setState('success')
-            setUserData(profile)
-        }).catch(err => {
-            setState('error')
-            console.log("ERROR")
-            console.log(err)
         })
-    }, [])
-    switch (state) {
-        case 'loading':
-            return <CircularProgress/>
-        case 'error':
-            return <Error/>
-        case 'success':
-            return ProfileComponent(userData!!)
     }
-    return ProfileComponent(aalimProfile)
+
+
+    useEffect(() => {
+        fetchProfile()
+    }, [])
+
+    return (
+        <div>
+            {state === 'loading' && <CircularProgress/>}
+            {userData && ProfileComponent(userData)}
+        </div>
+    )
 }

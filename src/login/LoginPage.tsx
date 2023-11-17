@@ -1,16 +1,24 @@
 import React from 'react';
 import {Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, TextField, Typography} from "@mui/material";
-import {DefaultService} from "./api";
 
-const handleSubmit = (event: any) => {
-    console.log('PEPE')
+const handleSubmit = async (event: any, onSuccess: VoidFunction, onError: VoidFunction) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const res = DefaultService.userLogin({
-        "login": data.get("email") as string,
-        "password": data.get("password") as string
-    })
-    res.then(console.log)
+    const data = new FormData(event.currentTarget)
+    fetch("http://localhost:8080/login", {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify({
+                "login": data.get("email") as string,
+                "password": data.get("password") as string
+            })
+        }
+    ).then((res) => {
+            res.ok ? onSuccess() : console.log("ERROR")
+        }, err => {
+            console.log(err)
+            onError()
+        }
+    )
 };
 
 interface SignInCallbacks {
@@ -18,7 +26,7 @@ interface SignInCallbacks {
     onRegister: () => void
 }
 
-export class SignInPage extends React.Component<SignInCallbacks> {
+export class LoginPage extends React.Component<SignInCallbacks> {
     render() {
         return (
             <Container component="main" maxWidth="xs">
@@ -33,7 +41,13 @@ export class SignInPage extends React.Component<SignInCallbacks> {
                     <Typography component="h1" variant="h5">
                         Авторизация
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+                    <Box component="form" onSubmit={
+                        (event) => handleSubmit(
+                            event,
+                            this.props.onSuccess,
+                            () => console.log("ERROR")
+                        )
+                    } noValidate sx={{mt: 1}}>
                         <TextField
                             margin="normal"
                             required
@@ -63,7 +77,6 @@ export class SignInPage extends React.Component<SignInCallbacks> {
                             fullWidth
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
-                            // onClick={this.props.onSuccess}
                         >
                             Войти
                         </Button>

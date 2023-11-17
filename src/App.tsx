@@ -3,9 +3,6 @@ import {Profile} from "./Profile";
 import {Subscriptions} from "./Subscriptions";
 import {Meetings} from "./Meetings";
 import {MainPage} from "./MainPage";
-import {ContactsPage} from "./ContactsPage";
-import {Principles} from "./Principles";
-import {SignInPage} from "./SignInPage"
 import {
     Avatar,
     Box, createTheme,
@@ -17,54 +14,13 @@ import {
     MenuItem,
     ThemeProvider,
     Tooltip,
-    useTheme, AppBar, Typography, Stack, Toolbar, Button, PaletteMode, CssBaseline, Link
+    useTheme, AppBar, Typography, Stack, Toolbar, Button, CssBaseline, Link
 } from "@mui/material";
 import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-material";
-import {grey} from "@mui/material/colors";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {ColorModeContext, getThemeDesign} from './Theme';
+import {LoginPage} from "./login/LoginPage";
 import {RegisterPage} from "./RegisterPage";
-
-type PageState =
-    "profile"
-    | "subscriptions"
-    | "meetings"
-    | "main-page"
-    | "contacts"
-    | "principles"
-    | "signin"
-    | "register"
-
-const ColorModeContext = React.createContext({
-    toggleColorMode: () => {
-    }
-});
-
-const getThemeDesign = (mode: PaletteMode) => ({
-    palette: {
-        mode,
-        ...(mode === 'light')
-            ? {
-                // palette values for light mode
-                background: {
-                    primary: '#fff'
-                },
-                text: {
-                    primary: grey[900],
-                    secondary: grey[800],
-                },
-            } :
-            {
-                // palette values for dark mode
-                background: {
-                    primary: '#222222',
-                    paper: grey[700],
-                },
-                text: {
-                    primary: '#cbcbcb',
-                    secondary: grey[500],
-                },
-            }
-    }
-})
 
 export default function ToggleColorMode() {
     const [mode, setMode] = React.useState<'light' | 'dark'>('light');
@@ -102,30 +58,25 @@ function Copyright(props: any) {
     );
 }
 
+const PrivateWrapper = ({isLoggedIn, redirectTo = "/login", children}: {
+    children: JSX.Element,
+    isLoggedIn: boolean,
+    redirectTo: string
+}) => {
+    return isLoggedIn ? children : <Navigate to={redirectTo} replace/>;
+};
+
+
 function App() {
-    const [page, setPage] = useState<PageState>("main-page")
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
+    const navigation = useNavigate()
 
-    function renderState(state: PageState) {
-        switch (state) {
-            case "main-page":
-                return <MainPage/>
-            case "profile":
-                return <Profile/>;
-            case "subscriptions":
-                return <Subscriptions/>;
-            case "meetings":
-                return <Meetings/>;
-            case "contacts":
-                return <ContactsPage/>
-            case "principles":
-                return <Principles/>
-            case "signin":
-                return <SignInPage onSuccess={() => setPage("profile")} onRegister={() => setPage("register")}/>
-            case "register":
-                return <RegisterPage callback={() => setPage("profile")}/>
-        }
+    const [loggedIn, setLoggedIn] = useState(false)
+
+    const onAuthSuccess = () => {
+        setLoggedIn(true)
+        navigation("/profile")
     }
 
     function AccountMenu() {
@@ -134,6 +85,10 @@ function App() {
         const handleClick = (event: React.MouseEvent<HTMLElement>) => {
             setAnchorEl(event.currentTarget);
         };
+        const onLogoutClick = () => {
+            setLoggedIn(false)
+            navigation("/login")
+        }
 
         const handleClose = () => {
             setAnchorEl(null);
@@ -190,7 +145,7 @@ function App() {
                     transformOrigin={{horizontal: 'right', vertical: 'top'}}
                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 >
-                    <MenuItem onClick={() => setPage("profile")}>
+                    <MenuItem onClick={() => navigation("/profile")}>
                         <Avatar/> Профиль
                     </MenuItem>
                     <Divider/>
@@ -200,7 +155,7 @@ function App() {
                         </ListItemIcon>
                         Настройки приложения
                     </MenuItem>
-                    <MenuItem onClick={() => setPage("signin")}>
+                    <MenuItem onClick={onLogoutClick}>
                         <ListItemIcon>
                             <Logout fontSize="small"/>
                         </ListItemIcon>
@@ -231,7 +186,7 @@ function App() {
                                 color: 'inherit',
                                 textDecoration: 'none',
                             }}
-                            onClick={() => setPage("main-page")}
+                            onClick={() => navigation("/")}
                         >
                             Rndmcffe
                         </Typography>
@@ -256,13 +211,9 @@ function App() {
                         </Typography>
                         <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("meetings")}>Встречи</Button>
+                                    onClick={() => navigation("/meetings")}>Встречи</Button>
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("subscriptions")}>Подписки</Button>
-                            <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("principles")}>Как ходить на встречи</Button>
-                            <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("contacts")}>Работать с нами</Button>
+                                    onClick={() => navigation("/subscribtions")}>Подписки</Button>
                         </Box>
                         {AccountMenu()}
                         <IconButton sx={{ml: 1}} onClick={colorMode.toggleColorMode} color="inherit">
@@ -272,12 +223,21 @@ function App() {
                 </Container>
             </AppBar>
             <Container className="StatePageContainer">
-                {renderState(page)}
+                <Routes>
+                    <Route path="/" element={<MainPage/>}/>
+                    <Route path="/meetings"
+                           element={<PrivateWrapper isLoggedIn={loggedIn}
+                                                    redirectTo="/login"><Meetings/></PrivateWrapper>}/>
+                    <Route path="/profile" element={<PrivateWrapper isLoggedIn={loggedIn} redirectTo="/login"><Profile/></PrivateWrapper>}/>
+                    <Route path="/subscribtions"
+                           element={<PrivateWrapper isLoggedIn={loggedIn}
+                                                    redirectTo="/login"><Subscriptions/></PrivateWrapper>}/>
+                    <Route path="/register" element={<RegisterPage callback={() => navigation("/profile")}/>}/>
+                    <Route path="/login" element={<LoginPage onRegister={() => navigation("/register")}
+                                                             onSuccess={onAuthSuccess}/>}/>
+                </Routes>
             </Container>
             <Copyright sx={{mt: 8, mb: 4}}/>
-            {/*<div className="PageFooter">*/}
-            {/*    © {new Date().getFullYear()} <a href="https://github.com/Olex1313"> Copyright aalim-corp </a>*/}
-            {/*</div>*/}
         </Stack>
     );
 }

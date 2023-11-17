@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button,
     Chip,
@@ -6,11 +6,13 @@ import {
     Typography,
     CardContent,
     Grid,
-    Stack, List, CardActions, Divider, Paper
+    Stack, List, CardActions, Divider, Paper, CircularProgress
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import {Col, Container, Row} from "react-bootstrap";
 import CardMedia from "@mui/material/CardMedia";
+import {DefaultService} from "./api";
+import {Error} from "@mui/icons-material";
 
 
 interface ProfileModel {
@@ -40,6 +42,28 @@ const aalimProfile = {
     rating: 4.9,
     interests: ["C++", "D&D", "Backend", "Распределенные системы"]
 }
+
+const fetchProfile = async (): Promise<ProfileModel> => await DefaultService.getMyProfile().then(
+    res => {
+        return {
+            firstName: res.first_name,
+            lastName: res.last_name,
+            occupation: aalimProfile.occupation,
+            city: aalimProfile.city,
+            image: aalimProfile.image,
+            telegramLogin: res.tg_login,
+            about: aalimProfile.about,
+            meetingsCount: aalimProfile.meetingsCount,
+            coffeeCups: aalimProfile.coffeeCups,
+            rating: aalimProfile.rating,
+            interests: aalimProfile.interests
+        }
+    },
+    err => {
+        console.log("Что-то пошло не так, вот вам тыква...")
+        return aalimProfile
+    }
+)
 
 const ProfileComponent = (userProfile: ProfileModel) =>
     <Grid spacing={2} className="ProfileGrid">
@@ -113,5 +137,26 @@ const ProfileComponent = (userProfile: ProfileModel) =>
     </Grid>
 
 export const Profile = () => {
+    const [userData, setUserData] = useState<ProfileModel | null>(null)
+    const [state, setState] = useState('')
+    useEffect(() => {
+        setState('loading')
+        fetchProfile().then(profile => {
+            setState('success')
+            setUserData(profile)
+        }).catch(err => {
+            setState('error')
+            console.log("ERROR")
+            console.log(err)
+        })
+    }, [])
+    switch (state) {
+        case 'loading':
+            return <CircularProgress/>
+        case 'error':
+            return <Error/>
+        case 'success':
+            return ProfileComponent(userData!!)
+    }
     return ProfileComponent(aalimProfile)
 }

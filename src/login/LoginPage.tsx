@@ -13,17 +13,17 @@ const handleSubmit = async (event: any, onSuccess: VoidFunction, onError: VoidFu
             })
         }
     ).then((res) => {
-            res.ok ? onSuccess() : console.log("ERROR")
+            res.ok ? onSuccess() : onError()
         }, err => {
             console.log(err)
             onError()
         }
     )
 };
-
 interface SignInCallbacks {
-    onSuccess: () => void
-    onRegister: () => void
+    onSuccess: VoidFunction
+    onRegister: VoidFunction
+    onErr: VoidFunction
 }
 
 export class LoginPage extends React.Component<SignInCallbacks> {
@@ -45,7 +45,7 @@ export class LoginPage extends React.Component<SignInCallbacks> {
                         (event) => handleSubmit(
                             event,
                             this.props.onSuccess,
-                            () => console.log("ERROR")
+                            this.props.onErr,
                         )
                     } noValidate sx={{mt: 1}}>
                         <TextField

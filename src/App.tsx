@@ -20,7 +20,9 @@ import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-mat
 import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import {ColorModeContext, getThemeDesign} from './Theme';
 import {LoginPage} from "./login/LoginPage";
-import {RegisterPage} from "./RegisterPage";
+import {RegisterPage} from "./login/RegisterPage";
+import {DefaultService, OpenAPI} from "./api";
+import {Store} from 'react-notifications-component';
 
 export default function ToggleColorMode() {
     const [mode, setMode] = React.useState<'light' | 'dark'>('light');
@@ -63,9 +65,24 @@ const PrivateWrapper = ({isLoggedIn, redirectTo = "/login", children}: {
     isLoggedIn: boolean,
     redirectTo: string
 }) => {
-    return isLoggedIn ? children : <Navigate to={redirectTo} replace/>;
+    if (isLoggedIn) {
+        return children
+    }
+    Store.addNotification({
+        title: "Мы вас не узнали",
+        type: "warning",
+        message: "Пожалуйста авторизуйтесь",
+        container: "top-right",
+        dismiss: {
+            duration: 500,
+            pauseOnHover: true
+        }
+    })
+    return <Navigate to={redirectTo} replace/>
 };
 
+OpenAPI.BASE = "http://localhost:8080"
+OpenAPI.WITH_CREDENTIALS = true
 
 function App() {
     const theme = useTheme();
@@ -79,14 +96,42 @@ function App() {
         navigation("/profile")
     }
 
+    const onRegisterSuccess = () => {
+        onAuthSuccess()
+    }
+
+    const onAuthErr = () => {
+        Store.addNotification({
+            title: "Ошибка",
+            type: "danger",
+            message: "Неправильный логин или пароль",
+            container: "top-right"
+        })
+    }
+
+    const onRegisterErr = () => {
+        Store.addNotification({
+            title: "Ошибка",
+            type: "danger",
+            message: "Что-то пошло не так :(",
+            container: "top-right"
+        })
+    }
+
     function AccountMenu() {
         const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
         const open = Boolean(anchorEl);
         const handleClick = (event: React.MouseEvent<HTMLElement>) => {
             setAnchorEl(event.currentTarget);
         };
-        const onLogoutClick = () => {
+        const onLogoutClick = async () => {
+            // doLogout()
+            await DefaultService.userLogout().then(
+                () => console.log("logout succeeded"),
+                () => console.log("failed to logout")
+            )
             setLoggedIn(false)
+            document.cookie = `SESSION_ID=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
             navigation("/login")
         }
 
@@ -232,9 +277,9 @@ function App() {
                     <Route path="/subscribtions"
                            element={<PrivateWrapper isLoggedIn={loggedIn}
                                                     redirectTo="/login"><Subscriptions/></PrivateWrapper>}/>
-                    <Route path="/register" element={<RegisterPage callback={() => navigation("/profile")}/>}/>
+                    <Route path="/register" element={<RegisterPage onSuccess={onRegisterSuccess} onError={onRegisterErr}/>}/>
                     <Route path="/login" element={<LoginPage onRegister={() => navigation("/register")}
-                                                             onSuccess={onAuthSuccess}/>}/>
+                                                             onSuccess={onAuthSuccess} onErr={onAuthErr}/>}/>
                 </Routes>
             </Container>
             <Copyright sx={{mt: 8, mb: 4}}/>

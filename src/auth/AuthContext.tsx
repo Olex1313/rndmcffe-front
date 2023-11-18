@@ -1,8 +1,9 @@
+import React from "react";
 import {createContext, useState} from "react";
 
 type AuthContextType = {
-    isAuthenticated: boolean; // флаг, показывающий, аутентифицирован ли пользователь
-    setAuth: (auth: boolean) => void; // функция для изменения значения isAuthenticated
+    isAuthenticated: boolean;
+    setAuth: (auth: boolean) => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({

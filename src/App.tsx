@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Profile} from "./Profile";
 import {Subscriptions} from "./Subscriptions";
 import {Meetings} from "./Meetings";
@@ -17,12 +17,13 @@ import {
     useTheme, AppBar, Typography, Stack, Toolbar, Button, CssBaseline, Link
 } from "@mui/material";
 import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-material";
-import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import {ColorModeContext, getThemeDesign} from './Theme';
-import {LoginPage} from "./login/LoginPage";
-import {RegisterPage} from "./login/RegisterPage";
 import {DefaultService, OpenAPI} from "./api";
-import {Store} from 'react-notifications-component';
+import useAuth from "./auth/AuthHook";
+import {PrivateRoute} from "./auth/PrivateRoute";
+import LoginPage from './login/LoginPage';
+import RegisterPage from './login/RegisterPage';
 
 export default function ToggleColorMode() {
     const [mode, setMode] = React.useState<'light' | 'dark'>('light');
@@ -59,40 +60,6 @@ function Copyright(props: any) {
         </Typography>
     );
 }
-
-const PrivateWrapper = ({isLoggedIn, redirectTo = "/login", children}: {
-    children: JSX.Element,
-    isLoggedIn: boolean,
-    redirectTo: string
-}) => {
-    useEffect(() => {
-        fetch('http://localhost:8080/users/me', {
-                method: "GET",
-                credentials: "include"
-            }
-        ).then(res => res.ok ? isLoggedIn = true : isLoggedIn = false)
-    }, [])
-
-    if (isLoggedIn) {
-        return children
-    }
-    try {
-        Store.addNotification({
-            title: "Мы вас не узнали",
-            type: "warning",
-            message: "Пожалуйста авторизуйтесь",
-            container: "top-right",
-            dismiss: {
-                duration: 500,
-                pauseOnHover: true
-            }
-        })
-    } catch (e) {
-        console.log(e)
-    }
-    return <Navigate to={redirectTo} replace/>
-}
-
 OpenAPI.BASE = "http://localhost:8080"
 OpenAPI.WITH_CREDENTIALS = true
 
@@ -101,50 +68,24 @@ function App() {
     const colorMode = React.useContext(ColorModeContext);
     const navigation = useNavigate()
 
-    const [loggedIn, setLoggedIn] = useState(false)
-
-    const onAuthSuccess = () => {
-        setLoggedIn(true)
-        navigation("/profile")
-    }
-
-    const onRegisterSuccess = () => {
-        onAuthSuccess()
-    }
-
-    const onAuthErr = () => {
-        Store.addNotification({
-            title: "Ошибка",
-            type: "danger",
-            message: "Неправильный логин или пароль",
-            container: "top-right"
-        })
-    }
-
-    const onRegisterErr = () => {
-        Store.addNotification({
-            title: "Ошибка",
-            type: "danger",
-            message: "Что-то пошло не так :(",
-            container: "top-right"
-        })
-    }
-
     function AccountMenu() {
         const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
         const open = Boolean(anchorEl);
         const handleClick = (event: React.MouseEvent<HTMLElement>) => {
             setAnchorEl(event.currentTarget);
         };
+
+        const {setAuth} = useAuth()
+        const navigate = useNavigate()
+
         const onLogoutClick = async () => {
-            // doLogout()
             await DefaultService.userLogout().then(
                 () => console.log("logout succeeded"),
                 () => console.log("failed to logout")
             )
-            setLoggedIn(false)
+            setAuth(false)
             document.cookie = `SESSION_ID=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
-            navigation("/login")
+            navigate("/login")
         }
 
         const handleClose = () => {
@@ -270,7 +211,7 @@ function App() {
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
                                     onClick={() => navigation("/meetings")}>Встречи</Button>
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => navigation("/subscribtions")}>Подписки</Button>
+                                    onClick={() => navigation("/subscriptions")}>Подписки</Button>
                         </Box>
                         {AccountMenu()}
                         <IconButton sx={{ml: 1}} onClick={colorMode.toggleColorMode} color="inherit">
@@ -282,17 +223,13 @@ function App() {
             <Container className="StatePageContainer">
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
-                    <Route path="/meetings"
-                           element={<PrivateWrapper isLoggedIn={loggedIn}
-                                                    redirectTo="/login"><Meetings/></PrivateWrapper>}/>
-                    <Route path="/profile" element={<PrivateWrapper isLoggedIn={loggedIn} redirectTo="/login"><Profile/></PrivateWrapper>}/>
-                    <Route path="/subscribtions"
-                           element={<PrivateWrapper isLoggedIn={loggedIn}
-                                                    redirectTo="/login"><Subscriptions/></PrivateWrapper>}/>
-                    <Route path="/register"
-                           element={<RegisterPage onSuccess={onRegisterSuccess} onError={onRegisterErr}/>}/>
-                    <Route path="/login" element={<LoginPage onRegister={() => navigation("/register")}
-                                                             onSuccess={onAuthSuccess} onErr={onAuthErr}/>}/>
+                    <Route element={<PrivateRoute/>}>
+                        <Route path="/meetings" element={<Meetings/>}/>
+                        <Route path="/profile" element={<Profile/>}/>
+                        <Route path="/subscriptions" element={<Subscriptions/>}/>
+                    </Route>
+                    <Route path="/register" element={<RegisterPage/>}/>
+                    <Route path="/login" element={<LoginPage/>}/>
                 </Routes>
             </Container>
             <Copyright sx={{mt: 8, mb: 4}}/>

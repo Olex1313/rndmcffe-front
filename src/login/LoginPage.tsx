@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, TextField, Typography} from "@mui/material";
+import {Box, Button, Checkbox, Container, FormControlLabel, TextField, Typography} from "@mui/material";
 import useAuth from "../auth/AuthHook";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Store} from "react-notifications-component";
@@ -91,18 +91,15 @@ const LoginPage = () => {
                     >
                         Войти
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link variant="body2">
-                                Забыли Пароль?
-                            </Link>
-                        </Grid>
-                        <Grid item>
-                            <Link onClick={() => navigate("/register")} variant="body2">
-                                {"Зарегистрироваться"}
-                            </Link>
-                        </Grid>
-                    </Grid>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{mt: 1, mb: 2}}
+                        onClick={() => navigate("/register")}
+                    >
+                        Зарегистрироваться
+                    </Button>
                 </Box>
             </Box>
         </Container>

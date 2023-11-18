@@ -9,6 +9,7 @@ import "./style.css";
 import {BrowserRouter} from "react-router-dom";
 import {CookiesProvider} from "react-cookie";
 import {ReactNotifications} from "react-notifications-component";
+import AuthProvider from "./auth/AuthContext";
 
 
 const root = ReactDOM.createRoot(
@@ -18,8 +19,10 @@ const root = ReactDOM.createRoot(
 root.render(
     <CookiesProvider>
         <BrowserRouter>
-            <ReactNotifications />
-            <App/>
+            <ReactNotifications/>
+            <AuthProvider>
+                <App/>
+            </AuthProvider>
         </BrowserRouter>
     </CookiesProvider>
 );

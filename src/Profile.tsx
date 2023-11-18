@@ -16,23 +16,7 @@ import {
 import Card from "@mui/material/Card";
 import {Col, Container, Row} from "react-bootstrap";
 import CardMedia from "@mui/material/CardMedia";
-import {DefaultService} from "./api";
-import {Error} from "@mui/icons-material";
-
-
-interface ProfileModel {
-    firstName: string
-    lastName: string
-    occupation: string
-    city: string
-    image: string
-    telegramLogin: string
-    about: string
-    meetingsCount: number,
-    coffeeCups: number,
-    rating: number,
-    interests: string[]
-}
+import {DefaultService, User} from "./api";
 
 const aalimProfile = {
     firstName: "Алексей",
@@ -48,8 +32,22 @@ const aalimProfile = {
     interests: ["C++", "D&D", "Backend", "Распределенные системы"]
 }
 
-const ProfileComponent = (userProfile: ProfileModel) =>
-    <Grid spacing={2} className="ProfileGrid">
+const ProfileComponent = (res: User) => {
+    console.log(res)
+    let userProfile = {
+        firstName: (res.first_name),
+        lastName: (res.last_name),
+        occupation: aalimProfile.occupation,
+        city: aalimProfile.city,
+        image: aalimProfile.image,
+        telegramLogin: (res.tg_login),
+        about: aalimProfile.about,
+        meetingsCount: aalimProfile.meetingsCount,
+        coffeeCups: aalimProfile.coffeeCups,
+        rating: aalimProfile.rating,
+        interests: aalimProfile.interests
+    }
+    return (<Grid spacing={2} className="ProfileGrid">
         <Paper>
             <Container>
                 <Stack direction="row" spacing={3} className="ProfileContainer">
@@ -117,30 +115,18 @@ const ProfileComponent = (userProfile: ProfileModel) =>
                 </Row>
             </CardContent>
         </Card>
-    </Grid>
+    </Grid>)
+}
 
 export const Profile = () => {
-    const [userData, setUserData] = useState<ProfileModel | null>(null)
-    const [state, setState] = useState('loading')
+    const [userData, setUserData] = useState<User | null>(null)
+    const [isLoading, setLoading] = useState(true)
 
     const fetchProfile = () => {
-        setState('loading')
-        DefaultService.getMyProfile().then(res => {
-            setUserData({
-                firstName: res.first_name,
-                lastName: res.last_name,
-                occupation: aalimProfile.occupation,
-                city: aalimProfile.city,
-                image: aalimProfile.image,
-                telegramLogin: res.tg_login,
-                about: aalimProfile.about,
-                meetingsCount: aalimProfile.meetingsCount,
-                coffeeCups: aalimProfile.coffeeCups,
-                rating: aalimProfile.rating,
-                interests: aalimProfile.interests
-            })
-            console.log(userData)
-            setState('success')
+        DefaultService.getMyProfile().then(json => {
+            const userData = JSON.parse(json as unknown as string) as User
+            setUserData(userData)
+            setLoading(false)
         })
     }
 
@@ -150,9 +136,6 @@ export const Profile = () => {
     }, [])
 
     return (
-        <div>
-            {state === 'loading' && <CircularProgress/>}
-            {userData && ProfileComponent(userData)}
-        </div>
+        isLoading ? <CircularProgress/> : ProfileComponent(userData as User)
     )
 }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Profile} from "./Profile";
 import {Subscriptions} from "./Subscriptions";
 import {Meetings} from "./Meetings";
@@ -65,21 +65,33 @@ const PrivateWrapper = ({isLoggedIn, redirectTo = "/login", children}: {
     isLoggedIn: boolean,
     redirectTo: string
 }) => {
+    useEffect(() => {
+        fetch('http://localhost:8080/users/me', {
+                method: "GET",
+                credentials: "include"
+            }
+        ).then(res => res.ok ? isLoggedIn = true : isLoggedIn = false)
+    }, [])
+
     if (isLoggedIn) {
         return children
     }
-    Store.addNotification({
-        title: "Мы вас не узнали",
-        type: "warning",
-        message: "Пожалуйста авторизуйтесь",
-        container: "top-right",
-        dismiss: {
-            duration: 500,
-            pauseOnHover: true
-        }
-    })
+    try {
+        Store.addNotification({
+            title: "Мы вас не узнали",
+            type: "warning",
+            message: "Пожалуйста авторизуйтесь",
+            container: "top-right",
+            dismiss: {
+                duration: 500,
+                pauseOnHover: true
+            }
+        })
+    } catch (e) {
+        console.log(e)
+    }
     return <Navigate to={redirectTo} replace/>
-};
+}
 
 OpenAPI.BASE = "http://localhost:8080"
 OpenAPI.WITH_CREDENTIALS = true
@@ -277,7 +289,8 @@ function App() {
                     <Route path="/subscribtions"
                            element={<PrivateWrapper isLoggedIn={loggedIn}
                                                     redirectTo="/login"><Subscriptions/></PrivateWrapper>}/>
-                    <Route path="/register" element={<RegisterPage onSuccess={onRegisterSuccess} onError={onRegisterErr}/>}/>
+                    <Route path="/register"
+                           element={<RegisterPage onSuccess={onRegisterSuccess} onError={onRegisterErr}/>}/>
                     <Route path="/login" element={<LoginPage onRegister={() => navigation("/register")}
                                                              onSuccess={onAuthSuccess} onErr={onAuthErr}/>}/>
                 </Routes>

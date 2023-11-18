@@ -1,11 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Profile} from "./Profile";
 import {Subscriptions} from "./Subscriptions";
 import {Meetings} from "./Meetings";
 import {MainPage} from "./MainPage";
-import {ContactsPage} from "./ContactsPage";
-import {Principles} from "./Principles";
-import {SignInPage} from "./SignInPage"
 import {
     Avatar,
     Box, createTheme,
@@ -17,54 +14,16 @@ import {
     MenuItem,
     ThemeProvider,
     Tooltip,
-    useTheme, AppBar, Typography, Stack, Toolbar, Button, PaletteMode, CssBaseline, Link
+    useTheme, AppBar, Typography, Stack, Toolbar, Button, CssBaseline, Link
 } from "@mui/material";
 import {Logout, Settings, Brightness4, Brightness7, Coffee} from "@mui/icons-material";
-import {grey} from "@mui/material/colors";
-import {RegisterPage} from "./RegisterPage";
-
-type PageState =
-    "profile"
-    | "subscriptions"
-    | "meetings"
-    | "main-page"
-    | "contacts"
-    | "principles"
-    | "signin"
-    | "register"
-
-const ColorModeContext = React.createContext({
-    toggleColorMode: () => {
-    }
-});
-
-const getThemeDesign = (mode: PaletteMode) => ({
-    palette: {
-        mode,
-        ...(mode === 'light')
-            ? {
-                // palette values for light mode
-                background: {
-                    primary: '#fff'
-                },
-                text: {
-                    primary: grey[900],
-                    secondary: grey[800],
-                },
-            } :
-            {
-                // palette values for dark mode
-                background: {
-                    primary: '#222222',
-                    paper: grey[700],
-                },
-                text: {
-                    primary: '#cbcbcb',
-                    secondary: grey[500],
-                },
-            }
-    }
-})
+import {Route, Routes, useNavigate} from "react-router-dom";
+import {ColorModeContext, getThemeDesign} from './Theme';
+import {DefaultService, OpenAPI} from "./api";
+import useAuth from "./auth/AuthHook";
+import {PrivateRoute} from "./auth/PrivateRoute";
+import LoginPage from './login/LoginPage';
+import RegisterPage from './login/RegisterPage';
 
 export default function ToggleColorMode() {
     const [mode, setMode] = React.useState<'light' | 'dark'>('light');
@@ -101,32 +60,13 @@ function Copyright(props: any) {
         </Typography>
     );
 }
+OpenAPI.BASE = "http://localhost:8080"
+OpenAPI.WITH_CREDENTIALS = true
 
 function App() {
-    const [page, setPage] = useState<PageState>("main-page")
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
-
-    function renderState(state: PageState) {
-        switch (state) {
-            case "main-page":
-                return <MainPage/>
-            case "profile":
-                return <Profile/>;
-            case "subscriptions":
-                return <Subscriptions/>;
-            case "meetings":
-                return <Meetings/>;
-            case "contacts":
-                return <ContactsPage/>
-            case "principles":
-                return <Principles/>
-            case "signin":
-                return <SignInPage onSuccess={() => setPage("profile")} onRegister={() => setPage("register")}/>
-            case "register":
-                return <RegisterPage callback={() => setPage("profile")}/>
-        }
-    }
+    const navigation = useNavigate()
 
     function AccountMenu() {
         const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -134,6 +74,19 @@ function App() {
         const handleClick = (event: React.MouseEvent<HTMLElement>) => {
             setAnchorEl(event.currentTarget);
         };
+
+        const {setAuth} = useAuth()
+        const navigate = useNavigate()
+
+        const onLogoutClick = async () => {
+            await DefaultService.userLogout().then(
+                () => console.log("logout succeeded"),
+                () => console.log("failed to logout")
+            )
+            setAuth(false)
+            document.cookie = `SESSION_ID=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
+            navigate("/login")
+        }
 
         const handleClose = () => {
             setAnchorEl(null);
@@ -190,7 +143,7 @@ function App() {
                     transformOrigin={{horizontal: 'right', vertical: 'top'}}
                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 >
-                    <MenuItem onClick={() => setPage("profile")}>
+                    <MenuItem onClick={() => navigation("/profile")}>
                         <Avatar/> Профиль
                     </MenuItem>
                     <Divider/>
@@ -200,7 +153,7 @@ function App() {
                         </ListItemIcon>
                         Настройки приложения
                     </MenuItem>
-                    <MenuItem onClick={() => setPage("signin")}>
+                    <MenuItem onClick={onLogoutClick}>
                         <ListItemIcon>
                             <Logout fontSize="small"/>
                         </ListItemIcon>
@@ -231,7 +184,7 @@ function App() {
                                 color: 'inherit',
                                 textDecoration: 'none',
                             }}
-                            onClick={() => setPage("main-page")}
+                            onClick={() => navigation("/")}
                         >
                             Rndmcffe
                         </Typography>
@@ -256,13 +209,9 @@ function App() {
                         </Typography>
                         <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("meetings")}>Встречи</Button>
+                                    onClick={() => navigation("/meetings")}>Встречи</Button>
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("subscriptions")}>Подписки</Button>
-                            <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("principles")}>Как ходить на встречи</Button>
-                            <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => setPage("contacts")}>Работать с нами</Button>
+                                    onClick={() => navigation("/subscriptions")}>Подписки</Button>
                         </Box>
                         {AccountMenu()}
                         <IconButton sx={{ml: 1}} onClick={colorMode.toggleColorMode} color="inherit">
@@ -272,12 +221,18 @@ function App() {
                 </Container>
             </AppBar>
             <Container className="StatePageContainer">
-                {renderState(page)}
+                <Routes>
+                    <Route path="/" element={<MainPage/>}/>
+                    <Route element={<PrivateRoute/>}>
+                        <Route path="/meetings" element={<Meetings/>}/>
+                        <Route path="/profile" element={<Profile/>}/>
+                        <Route path="/subscriptions" element={<Subscriptions/>}/>
+                    </Route>
+                    <Route path="/register" element={<RegisterPage/>}/>
+                    <Route path="/login" element={<LoginPage/>}/>
+                </Routes>
             </Container>
             <Copyright sx={{mt: 8, mb: 4}}/>
-            {/*<div className="PageFooter">*/}
-            {/*    © {new Date().getFullYear()} <a href="https://github.com/Olex1313"> Copyright aalim-corp </a>*/}
-            {/*</div>*/}
         </Stack>
     );
 }

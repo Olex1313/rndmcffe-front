@@ -1,31 +1,22 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button,
-    Chip,
-    ListItem,
-    Typography,
+    CardActions,
     CardContent,
+    Chip,
+    CircularProgress,
+    Divider,
     Grid,
-    Stack, List, CardActions, Divider, Paper
+    List,
+    ListItem,
+    Paper,
+    Stack,
+    Typography
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import {Col, Container, Row} from "react-bootstrap";
 import CardMedia from "@mui/material/CardMedia";
-
-
-interface ProfileModel {
-    firstName: string
-    lastName: string
-    occupation: string
-    city: string
-    image: string
-    telegramLogin: string
-    about: string
-    meetingsCount: number,
-    coffeeCups: number,
-    rating: number,
-    interests: string[]
-}
+import {DefaultService, User} from "./api";
 
 const aalimProfile = {
     firstName: "Алексей",
@@ -41,8 +32,22 @@ const aalimProfile = {
     interests: ["C++", "D&D", "Backend", "Распределенные системы"]
 }
 
-const ProfileComponent = (userProfile: ProfileModel) =>
-    <Grid spacing={2} className="ProfileGrid">
+const ProfileComponent = (res: User) => {
+    console.log(res)
+    let userProfile = {
+        firstName: (res.first_name),
+        lastName: (res.last_name),
+        occupation: aalimProfile.occupation,
+        city: aalimProfile.city,
+        image: aalimProfile.image,
+        telegramLogin: (res.tg_login),
+        about: aalimProfile.about,
+        meetingsCount: aalimProfile.meetingsCount,
+        coffeeCups: aalimProfile.coffeeCups,
+        rating: aalimProfile.rating,
+        interests: aalimProfile.interests
+    }
+    return (<Grid spacing={2} className="ProfileGrid">
         <Paper>
             <Container>
                 <Stack direction="row" spacing={3} className="ProfileContainer">
@@ -110,8 +115,27 @@ const ProfileComponent = (userProfile: ProfileModel) =>
                 </Row>
             </CardContent>
         </Card>
-    </Grid>
+    </Grid>)
+}
 
 export const Profile = () => {
-    return ProfileComponent(aalimProfile)
+    const [userData, setUserData] = useState<User | null>(null)
+    const [isLoading, setLoading] = useState(true)
+
+    const fetchProfile = () => {
+        DefaultService.getMyProfile().then(json => {
+            const userData = JSON.parse(json as unknown as string) as User
+            setUserData(userData)
+            setLoading(false)
+        })
+    }
+
+
+    useEffect(() => {
+        fetchProfile()
+    }, [])
+
+    return (
+        isLoading ? <CircularProgress/> : ProfileComponent(userData as User)
+    )
 }

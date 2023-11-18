@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, Row, Stack} from "react-bootstrap";
+import {Image, Stack} from "react-bootstrap";
 import "./style.css";
 
 export const MainPage = () => {

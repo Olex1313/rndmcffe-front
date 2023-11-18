@@ -1,0 +1,246 @@
+openapi: 3.0.3
+info:
+  title: Random coffee
+  description: Random coffee
+  version: 1.0.0
+servers:
+  - url: 'https'
+paths:
+  /login:
+    post:
+      summary: Logs in and returns the authentication cookie
+      operationId: userLogin
+      requestBody:
+        required: true
+        description: A JSON object containing the login and password.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      security: [ ]
+      responses:
+        '200':
+          description: >
+            Successfully authenticated.
+            The session ID is returned in a cookie named `SESSION_ID`. You need to include this cookie in subsequent requests.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: SESSION_ID=abcde12345; Path=/; HttpOnly
+        '400':
+          description: Invalid login or password
+  /logout:
+    post:
+      summary: Deletes current user session
+      operationId: userLogout
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '401':
+          description: possibly missing session id cookie or it is invalid
+        '200':
+          description: session deleted
+  /register:
+    post:
+      summary: Registers a new website user
+      operationId: userRegister
+      requestBody:
+        required: true
+        description: A JSON object containing essential user data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      security: [ ]
+      responses:
+        '200':
+          description: >
+            Successfully registered
+            You now may proceed to login form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: >
+            Specified data is invalid, possibly trying to register existing login 
+  /users/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user id
+      summary: Retrieves current user information
+      operationId: getUser
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '403':
+          description: Current user doesn't have permissions to see this user profile
+        '401':
+          description: Missing session id in request
+        '200':
+          description: Successfully get user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/me:
+    get:
+      summary: Retrieves current user information
+      operationId: getMyProfile
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '401':
+          description: Missing session id in request
+        '200':
+          description: Successfully get user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user_pics/{id}:
+    get:
+      summary: Get list of links to user-pics
+      operationId: GetUserPic
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            minLength: 5
+          description: The avatar id
+      responses:
+        '200':
+          description: >
+            bytes of the avatar
+          content:
+            application/jpeg:
+              schema:
+                $ref: '#/components/schemas/RawImage'
+        '404':
+          description: img not found
+    post:
+      summary: Add photo to user profile
+      operationId: AddPhoto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user id
+      requestBody:
+        required: true
+        description: Raw data for image
+        content:
+          application/jpeg:
+            schema:
+              $ref: '#/components/schemas/RawImage'
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '201':
+          description: >
+            Image successfully added to user profile
+        '403':
+          description: Current user doesn't have permissions to edit this user profile
+        '401':
+          description: Missing session id in request
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: SESSION_ID
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          example: aa1limonov
+        password:
+          type: string
+          example: top-secret
+    RegisterRequest:
+      type: object
+      required:
+        - login
+        - password
+        - tg_login
+        - city
+        - first_name
+        - last_name
+        - email
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        tg_login:
+          type: string
+        city:
+          type: string
+        first_name:
+          type: string
+          example: Alexey
+        last_name:
+          type: string
+          example: Limonov
+        email:
+          type: string
+          example: aalimonov_2@miem.hse.ru
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - login
+        - first_name
+        - last_name
+        - tg_login
+        - avatar_id
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          example: aalimonov_2@miem.hse.ru
+        login:
+          type: string
+          example: aalimonov_2
+        first_name:
+          type: string
+          example: Alexey
+        last_name:
+          type: string
+          example: Limonov
+        tg_login:
+          type: string
+          example: '@olexvp'
+        avatar_id:
+          type: string
+    RawImage:
+      type: string
+      format: binary
+    ListOfUrls:
+      type: array
+      items:
+        type: string
+
+  

@@ -16,7 +16,7 @@ import {
 import Card from "@mui/material/Card";
 import {Col, Container, Row} from "react-bootstrap";
 import CardMedia from "@mui/material/CardMedia";
-import {DefaultService, User} from "./api";
+import {DefaultService, User} from "../api";
 
 const aalimProfile = {
     firstName: "Алексей",
@@ -129,7 +129,6 @@ export const Profile = () => {
             setLoading(false)
         })
     }
-
 
     useEffect(() => {
         fetchProfile()

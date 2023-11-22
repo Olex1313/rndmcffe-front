@@ -1,43 +1,11 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./style.css";
 import {Card, CardMedia, CardContent, Typography, Box} from "@mui/material";
 import Carousel from "react-material-ui-carousel";
+import { UserContact } from "./api/models/UserContact";
 
-interface Meeting {
-    id: number
-    date: Date
-    place: string
-    person: string
-}
 
-const meetings: Meeting[] = [
-    {
-        id: 1,
-        date: new Date(),
-        place: "Москва, МИЭМ",
-        person: "Лимонов Алексей"
-    },
-    {
-        id: 2,
-        date: new Date(),
-        place: "Москва",
-        person: "Лимонов Алексей"
-    },
-    {
-        id: 3,
-        date: new Date(),
-        place: "Москва, НИУ ВШЭ",
-        person: "Лимонов Алексей"
-    },
-    {
-        id: 4,
-        date: new Date(),
-        place: "Москва, НИУ ВШЭ",
-        person: "Лимонов Алексей"
-    },
-]
-
-const MeetingComponent = (meeting: Meeting) => {
+const MeetingComponent = (meeting: UserContact) => {
     return <Card className="MeetingCard">
         <CardContent className="MeetingPhotoCardBody">
             <Carousel className="MeetingPhotoCarousel" autoPlay={false}>
@@ -59,17 +27,25 @@ const MeetingComponent = (meeting: Meeting) => {
         </CardContent>
 
         <CardContent>
-            <Typography gutterBottom variant="h5" component="div">{meeting.person}</Typography>
-            <Typography>Когда: {meeting.date.toDateString()}</Typography>
-            <Typography>Где: {meeting.place}</Typography>
+            <Typography gutterBottom variant="h5" component="div">{meeting.user_name}</Typography>
+            <Typography>Когда: {
+                new Date(meeting.time).toLocaleDateString("ru-RU")
+            }</Typography>
+            <Typography>Где: {meeting.occupation}</Typography>
         </CardContent>
     </Card>
 }
 
 export const Meetings = () => {
+    const [meetings, setMeetings] = useState<UserContact[]>([])
+    useEffect(() => {
+        fetch("http://localhost:8080/users/me/contacts", {credentials: "include"})
+            .then(res => res.json() as Promise<UserContact[]>)
+            .then(res => setMeetings(res))
+    }, [])
     return (
         <div className="MeetingsCardContainer">
-            {meetings.map(m => MeetingComponent(m))}
+            {meetings.length > 0 && meetings.map(m => MeetingComponent(m))}
         </div>
     )
 }

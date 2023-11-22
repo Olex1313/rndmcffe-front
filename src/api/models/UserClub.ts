@@ -3,13 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type User = {
+export type UserClub = {
     id: number;
-    email: string;
-    login: string;
-    first_name: string;
-    last_name: string;
-    tg_login: string;
-    avatar: string;
+    name: string;
+    occupation: string;
+    is_subscribed: boolean;
+    description: string;
+    image_url: string;
 };
 

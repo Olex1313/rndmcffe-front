@@ -1,6 +1,6 @@
 import React from 'react';
 import {Profile} from "./profile/Profile";
-import {Subscriptions} from "./Subscriptions";
+import {Subscriptions} from "./Clubs";
 import {Meetings} from "./Meetings";
 import {MainPage} from "./MainPage";
 import {
@@ -110,7 +110,7 @@ function App() {
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
                                     onClick={() => navigation("/meetings")}>Встречи</Button>
                             <Button sx={{my: 2, color: 'white', display: 'block'}}
-                                    onClick={() => navigation("/subscriptions")}>Подписки</Button>
+                                    onClick={() => navigation("/clubs")}>Подписки</Button>
                         </Box>
 
                         <CompactProfile/>
@@ -126,7 +126,7 @@ function App() {
                     <Route element={<PrivateRoute/>}>
                         <Route path="/meetings" element={<Meetings/>}/>
                         <Route path="/profile" element={<Profile/>}/>
-                        <Route path="/subscriptions" element={<Subscriptions/>}/>
+                        <Route path="/clubs" element={<Subscriptions/>}/>
                     </Route>
                     <Route path="/register" element={<RegisterPage/>}/>
                     <Route path="/login" element={<LoginPage/>}/>

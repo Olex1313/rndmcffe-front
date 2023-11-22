@@ -127,17 +127,10 @@ paths:
                 $ref: '#/components/schemas/RawImage'
         '404':
           description: img not found
+  /users/me/user_pics:
     post:
       summary: Add photo to user profile
       operationId: AddPhoto
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-            minimum: 1
-          description: The user id
       requestBody:
         required: true
         description: Raw data for image
@@ -155,6 +148,135 @@ paths:
           description: Current user doesn't have permissions to edit this user profile
         '401':
           description: Missing session id in request
+  /users/me/clubs:
+    get:
+      summary: Get list user's clubs
+      operationId: GetUserClubs
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '200':
+          description: clubs and you with club
+          content:
+            application/jpeg:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserClub'
+        '403':
+          description: Current user doesn't have permissions
+        '401':
+          description: Missing session id in request
+  /users/me/contacts:
+    get:
+      summary: Get list user's contacts
+      operationId: GetUserContacts
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '200':
+          description: Get contacts of user
+          content:
+            application/jpeg:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserContact'
+        '403':
+          description: Current user doesn't have permissions
+        '401':
+          description: Missing session id in request
+  /users/me/clubs/{id}:
+    post:
+      summary: Subscribe current user to club
+      operationId: AddUserToClub
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minLength: 5
+          description: id of new club
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '201':
+          description: >
+            You added to the club
+        '403':
+          description: Current user doesn't have permissions
+        '401':
+          description: Missing session id in request
+        '400':
+          description: Club not found
+    delete:
+      summary: Unsubscribe current user to club
+      operationId: RemoveUserFromClub
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minLength: 5
+          description: id of club
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '200':
+          description: >
+            You removed from club
+        '403':
+          description: Current user doesn't have permissions
+        '401':
+          description: Missing session id in request
+        '400':
+          description: Club not found
+  /clubs/{id}/pic:
+    get:
+      summary: Get club logo
+      operationId: GetClubPic
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The club-id
+      responses:
+        '200':
+          description: >
+            bytes of the avatar
+          content:
+            application/jpeg:
+              schema:
+                $ref: '#/components/schemas/RawImage'
+        '404':
+          description: img not found
+    post:
+      summary: Add new photo to club
+      operationId: AddPhotoToClub
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: id of club
+      requestBody:
+        required: true
+        description: Raw data for image
+        content:
+          application/jpeg:
+            schema:
+              $ref: '#/components/schemas/RawImage'
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '201':
+          description: >
+            Image successfully added
 components:
   securitySchemes:
     BasicAuth:
@@ -214,7 +336,7 @@ components:
         - first_name
         - last_name
         - tg_login
-        - avatar_id
+        - avatar
       properties:
         id:
           type: integer
@@ -233,14 +355,63 @@ components:
         tg_login:
           type: string
           example: '@olexvp'
-        avatar_id:
+        avatar:
           type: string
+    UserClub:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - occupation
+        - is_subscribed
+        - image_url
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'ИВТ МИЭМ'
+        occupation:
+          type: string
+          example: 'Москва'
+        is_subscribed:
+          type: boolean
+        description:
+          example: 'Встречи со студентами и выпускниками ИВТ МИЭМ'
+          type: string
+        image_url:
+          type: string
+          example: 'https://rndcfe.ru/clubs/1/pic'
+    UserContact:
+      type: object
+      required:
+        - id
+        - user_id
+        - user_name
+        - occupation
+        - time
+        - avatar_url
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 12
+        user_name:
+          type: string
+          example: Арвок Векукерин
+        occupation:
+          type: string
+          example: 'Строгино'
+        time:
+          type: string
+          format: date-time
+        avatar_url:
+          type: string
+          example: 'https://rndcfe.ru/clubs/1/pic'
     RawImage:
       type: string
       format: binary
-    ListOfUrls:
-      type: array
-      items:
-        type: string
-
-  

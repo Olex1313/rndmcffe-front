@@ -3,13 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type User = {
+export type UserContact = {
     id: number;
-    email: string;
-    login: string;
-    first_name: string;
-    last_name: string;
-    tg_login: string;
-    avatar: string;
+    user_id: number;
+    user_name: string;
+    occupation: string;
+    time: string;
+    avatar_url: string;
 };
 

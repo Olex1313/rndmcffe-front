@@ -6,6 +6,8 @@ import type { LoginRequest } from '../models/LoginRequest';
 import type { RawImage } from '../models/RawImage';
 import type { RegisterRequest } from '../models/RegisterRequest';
 import type { User } from '../models/User';
+import type { UserClub } from '../models/UserClub';
+import type { UserContact } from '../models/UserContact';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -133,28 +135,148 @@ export class DefaultService {
 
     /**
      * Add photo to user profile
-     * @param id The user id
      * @param requestBody Raw data for image
      * @returns any Image successfully added to user profile
      *
      * @throws ApiError
      */
     public static addPhoto(
-        id: number,
         requestBody: RawImage,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/user_pics/{id}',
-            path: {
-                'id': id,
-            },
+            url: '/users/me/user_pics',
             body: requestBody,
             mediaType: 'application/jpeg',
             errors: {
                 401: `Missing session id in request`,
                 403: `Current user doesn't have permissions to edit this user profile`,
             },
+        });
+    }
+
+    /**
+     * Get list user's clubs
+     * @returns UserClub clubs and you with club
+     * @throws ApiError
+     */
+    public static getUserClubs(): CancelablePromise<Array<UserClub>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/me/clubs',
+            errors: {
+                401: `Missing session id in request`,
+                403: `Current user doesn't have permissions`,
+            },
+        });
+    }
+
+    /**
+     * Get list user's contacts
+     * @returns UserContact Get contacts of user
+     * @throws ApiError
+     */
+    public static getUserContacts(): CancelablePromise<Array<UserContact>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/me/contacts',
+            errors: {
+                401: `Missing session id in request`,
+                403: `Current user doesn't have permissions`,
+            },
+        });
+    }
+
+    /**
+     * Subscribe current user to club
+     * @param id id of new club
+     * @returns any You added to the club
+     *
+     * @throws ApiError
+     */
+    public static addUserToClub(
+        id: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/users/me/clubs/{id}',
+            path: {
+                'id': id,
+            },
+            errors: {
+                400: `Club not found`,
+                401: `Missing session id in request`,
+                403: `Current user doesn't have permissions`,
+            },
+        });
+    }
+
+    /**
+     * Unsubscribe current user to club
+     * @param id id of club
+     * @returns any You removed from club
+     *
+     * @throws ApiError
+     */
+    public static removeUserFromClub(
+        id: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/users/me/clubs/{id}',
+            path: {
+                'id': id,
+            },
+            errors: {
+                400: `Club not found`,
+                401: `Missing session id in request`,
+                403: `Current user doesn't have permissions`,
+            },
+        });
+    }
+
+    /**
+     * Get club logo
+     * @param id The club-id
+     * @returns RawImage bytes of the avatar
+     *
+     * @throws ApiError
+     */
+    public static getClubPic(
+        id: number,
+    ): CancelablePromise<RawImage> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/clubs/{id}/pic',
+            path: {
+                'id': id,
+            },
+            errors: {
+                404: `img not found`,
+            },
+        });
+    }
+
+    /**
+     * Add new photo to club
+     * @param id id of club
+     * @param requestBody Raw data for image
+     * @returns any Image successfully added
+     *
+     * @throws ApiError
+     */
+    public static addPhotoToClub(
+        id: number,
+        requestBody: RawImage,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/clubs/{id}/pic',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/jpeg',
         });
     }
 

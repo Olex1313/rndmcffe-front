@@ -3,6 +3,7 @@ import {Profile} from "./profile/Profile";
 import {Subscriptions} from "./Clubs";
 import {Meetings} from "./Meetings";
 import {MainPage} from "./MainPage";
+import {absoluteUrl, openapiBaseUrl} from "./host"
 import {
     Box, createTheme,
     Container,
@@ -55,7 +56,7 @@ function Copyright(props: any) {
     );
 }
 
-OpenAPI.BASE = "http://localhost:8080"
+OpenAPI.BASE = openapiBaseUrl
 OpenAPI.WITH_CREDENTIALS = true
 
 function App() {

@@ -4,6 +4,7 @@ import CardMedia from "@mui/material/CardMedia";
 import {Button, CardActions, CardContent, Grid, Typography} from "@mui/material";
 import {CardFooter} from "react-bootstrap";
 import {UserClub} from "./api";
+import {absoluteUrl} from "./host";
 
 type ClubIdConsumer = (clubId: number) => void
 const ClubComponent = (userClub: UserClub, onSubscribe: ClubIdConsumer, onUnsubscribe: ClubIdConsumer) => {
@@ -39,13 +40,13 @@ const ClubComponent = (userClub: UserClub, onSubscribe: ClubIdConsumer, onUnsubs
 export const Subscriptions = () => {
     const [clubs, setClubs] = useState<UserClub[]>([])
     useEffect(() => {
-        fetch("http://localhost:8080/users/me/clubs", {credentials: "include"})
+        fetch(absoluteUrl("/users/me/clubs"), {credentials: "include"})
             .then(r => r.json() as Promise<UserClub[]>)
             .then(c => setClubs(c))
     }, [JSON.stringify(clubs)])
 
     const subscribeClub = (clubId: number) => {
-        fetch("http://localhost:8080/users/me/clubs/" + clubId, {
+        fetch(absoluteUrl(`/users/me/clubs/${clubId}`), {
             credentials: "include",
             method: "POST"
         }).then(res => {
@@ -65,7 +66,7 @@ export const Subscriptions = () => {
     }
 
     const unsubscribeClub = (clubId: number) => {
-        fetch("http://localhost:8080/users/me/clubs/" + clubId, {
+        fetch(absoluteUrl(`/users/me/clubs/${clubId}`), {
             credentials: "include",
             method: "DELETE"
         }).then(res => {

@@ -3,6 +3,7 @@ import "./style.css";
 import {Card, CardMedia, CardContent, Typography, Box} from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import { UserContact } from "./api/models/UserContact";
+import { absoluteUrl } from "./host";
 
 
 const MeetingComponent = (meeting: UserContact) => {
@@ -39,7 +40,7 @@ const MeetingComponent = (meeting: UserContact) => {
 export const Meetings = () => {
     const [meetings, setMeetings] = useState<UserContact[]>([])
     useEffect(() => {
-        fetch("http://localhost:8080/users/me/contacts", {credentials: "include"})
+        fetch(absoluteUrl("/users/me/contacts"), {credentials: "include"})
             .then(res => res.json() as Promise<UserContact[]>)
             .then(res => setMeetings(res))
     }, [])

@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import {absoluteUrl} from "../host";
 import {Navigate, Outlet, useLocation} from "react-router-dom";
 import useAuth from "./AuthHook";
 
@@ -8,7 +9,7 @@ export const PrivateRoute = () => {
     const location = useLocation()
 
     useEffect(() => {
-        fetch("http://localhost:8080/users/me", {credentials: "include"})
+        fetch(absoluteUrl("/users/me"), {credentials: "include"})
             .then(res => res.ok && setAuth(true))
     })
 

@@ -3,11 +3,12 @@ import {Box, Button, Checkbox, Container, FormControlLabel, TextField, Typograph
 import useAuth from "../auth/AuthHook";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Store} from "react-notifications-component";
+import { absoluteUrl } from '../host';
 
 const handleSubmit = async (event: any, onSuccess: VoidFunction, onError: VoidFunction) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget)
-    fetch("http://localhost:8080/login", {
+    fetch(absoluteUrl("/login"), {
             method: "POST",
             credentials: "include",
             body: JSON.stringify({

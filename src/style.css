@@ -87,12 +87,6 @@
     width: 192px;
 }
 
-.ProfilePhoto {
-    height: 250px;
-    width: 250px;
-    padding: 55px;
-    border-radius: 50%;
-}
 
 .ProfileGrid {
     max-height: 100%;

@@ -7,11 +7,17 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { Club } from './models/Club';
 export type { LoginRequest } from './models/LoginRequest';
+export type { NewClub } from './models/NewClub';
+export type { PatchClub } from './models/PatchClub';
+export type { PatchUser } from './models/PatchUser';
 export type { RawImage } from './models/RawImage';
 export type { RegisterRequest } from './models/RegisterRequest';
 export type { User } from './models/User';
 export type { UserClub } from './models/UserClub';
 export type { UserContact } from './models/UserContact';
 
+export { ClubsService } from './services/ClubsService';
 export { DefaultService } from './services/DefaultService';
+export { UsersService } from './services/UsersService';

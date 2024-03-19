@@ -4,6 +4,7 @@
 /* eslint-disable */
 
 export type User = {
+    participation: ParticipationMode;
     id: number;
     email: string;
     login: string;
@@ -11,5 +12,14 @@ export type User = {
     last_name: string;
     tg_login: string;
     avatar: string;
+    city: string;
+    interests: Array<string>;
 };
 
+export enum ParticipationMode {
+    Online = "Онлайн", Offline = "Оффлайн", Hybrid = "Гибрид"
+}
+
+export enum ParticipationLanguage {
+    RU = "Русский", EN = "Английский"
+}

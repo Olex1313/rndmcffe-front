@@ -11,10 +11,10 @@ export type { Club } from './models/Club';
 export type { LoginRequest } from './models/LoginRequest';
 export type { NewClub } from './models/NewClub';
 export type { PatchClub } from './models/PatchClub';
-export type { PatchUser } from './models/PatchUser';
+export { PatchUser } from './models/PatchUser';
 export type { RawImage } from './models/RawImage';
 export type { RegisterRequest } from './models/RegisterRequest';
-export type { User } from './models/User';
+export { User } from './models/User';
 export type { UserClub } from './models/UserClub';
 export type { UserContact } from './models/UserContact';
 

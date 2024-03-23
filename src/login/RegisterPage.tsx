@@ -10,7 +10,7 @@ import {
 import {DefaultService} from "../api";
 import useAuth from "../auth/AuthHook";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Store} from "react-notifications-component";
+import {onError} from "../common/OnError";
 
 export const doRegister = (event: any, onSuccess: VoidFunction, onError: VoidFunction) => {
     event.preventDefault();
@@ -39,14 +39,6 @@ const RegisterPage = () => {
         navigate(from, {replace: true})
     }
 
-    const onError = () => {
-        Store.addNotification({
-            title: "Ошибка",
-            type: "danger",
-            message: "Что-то пошло не так :(",
-            container: "top-right"
-        })
-    }
 
     return (
         <Container component="main" maxWidth="xs">

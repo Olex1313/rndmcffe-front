@@ -4,7 +4,6 @@
 /* eslint-disable */
 
 export type User = {
-    participation: ParticipationMode;
     id: number;
     email: string;
     login: string;
@@ -13,13 +12,29 @@ export type User = {
     tg_login: string;
     avatar: string;
     city: string;
-    interests: Array<string>;
+    about_me: string;
+    interests: Array<'Coffee' | 'ProductManagement' | 'Programming' | 'MachineLearning' | 'GameDev' | 'Sport' | 'Music'>;
+    meeting_mode: User.meeting_mode;
+    meeting_time: {
+        start: number;
+        end: number;
+    };
+    meeting_language: User.meeting_language;
 };
 
-export enum ParticipationMode {
-    Online = "Онлайн", Offline = "Оффлайн", Hybrid = "Гибрид"
+export namespace User {
+
+    export enum meeting_mode {
+        ONLINE = 'Online',
+        OFFLINE = 'Offline',
+        HYBRID = 'Hybrid',
+    }
+
+    export enum meeting_language {
+        RU = 'RU',
+        EN = 'EN',
+    }
+
+
 }
 
-export enum ParticipationLanguage {
-    RU = "Русский", EN = "Английский"
-}

@@ -479,6 +479,10 @@ components:
         - avatar
         - city
         - interests
+        - meeting_mode
+        - meeting_time
+        - meeting_language
+        - about_me
       properties:
         id:
           type: integer
@@ -501,11 +505,45 @@ components:
           type: string
         city:
           type: string
+        about_me:
+          type: string
         interests:
           type: array
           items:
             type: string
-            example: Coffee
+            enum:
+              - Coffee
+              - ProductManagement
+              - Programming
+              - MachineLearning
+              - GameDev
+              - Sport
+              - Music
+        meeting_mode:
+          type: string
+          enum:
+            - Online
+            - Offline
+            - Hybrid
+        meeting_time:
+          type: object
+          required:
+            - start
+            - end
+          properties:
+            start:
+              type: integer
+              minimum: 12
+              maximum: 20
+            end:
+              type: integer
+              minimum: 12
+              maximum: 20
+        meeting_language:
+          type: string
+          enum:
+            - RU
+            - EN
     PatchUser:
       type: object
       properties:
@@ -524,6 +562,47 @@ components:
         tg_login:
           type: string
           example: '@olexvp'
+        city:
+          type: string
+        about_me:
+          type: string
+        interests:
+          type: array
+          items:
+            type: string
+            enum:
+              - Coffee
+              - ProductManagement
+              - Programming
+              - MachineLearning
+              - GameDev
+              - Sport
+              - Music
+        meeting_mode:
+          type: string
+          enum:
+            - Online
+            - Offline
+            - Hybrid
+        meeting_time:
+          type: object
+          required:
+            - start
+            - end
+          properties:
+            start:
+              type: integer
+              minimum: 12
+              maximum: 20
+            end:
+              type: integer
+              minimum: 12
+              maximum: 20
+        meeting_language:
+          type: string
+          enum:
+            - RU
+            - EN
     UserClub:
       type: object
       required:

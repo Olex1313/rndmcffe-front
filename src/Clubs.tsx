@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from "react";
-import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import {Button, CardActions, CardContent, Grid, Typography} from "@mui/material";
 import {CardFooter} from "react-bootstrap";
 import {UserClub} from "./api";
 import {absoluteUrl} from "./host";
+import {PaddedPaper} from "./common/PaddedPaper";
 
 type ClubIdConsumer = (clubId: number) => void
+
 const ClubComponent = (userClub: UserClub, onSubscribe: ClubIdConsumer, onUnsubscribe: ClubIdConsumer) => {
-    return <Grid item xs={3}>
-        <Card sx={{maxWidth: 345}}>
-            <CardMedia sx={{height: 140}} image={userClub.image_url}/>
+    return <Grid item xs={6} md={6}>
+        <PaddedPaper>
+            <CardMedia sx={{height: 140}} image={userClub.image_url || "hse-logo.jpg"}/>
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                     {userClub.name}
@@ -33,7 +34,7 @@ const ClubComponent = (userClub: UserClub, onSubscribe: ClubIdConsumer, onUnsubs
                     {userClub.is_subscribed ? "Отписаться" : "Подписаться"}
                 </Button>
             </CardActions>
-        </Card>
+        </PaddedPaper>
     </Grid>;
 }
 
@@ -85,7 +86,7 @@ export const Subscriptions = () => {
         });
     }
 
-    return <Grid container justifyContent="center" spacing={3} rowSpacing={2}>
+    return <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
         {clubs.length > 0 && clubs.map(s => ClubComponent(s, subscribeClub, unsubscribeClub))}
     </Grid>
 }

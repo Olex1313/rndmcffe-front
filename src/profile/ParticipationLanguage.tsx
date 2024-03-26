@@ -19,8 +19,10 @@ export const ParticipationLanguage = (props: ParticipationLanguageProps) => {
             .then(() => setAlignment(newAlignment), onError)
     };
 
-    const availableValues = Object.entries(User.meeting_language).map(([value, label]) => <ToggleButton
-        value={value}>{label}</ToggleButton>)
+    const availableValues = Object
+        .entries(User.meeting_language)
+        .map(([value, label]) => <ToggleButton key={value}
+                                               value={value}>{label}</ToggleButton>)
 
     return (
         <PaddedPaper>

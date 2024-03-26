@@ -1,9 +1,9 @@
 import React from 'react';
 import {Profile} from "./profile/Profile";
 import {Subscriptions} from "./Clubs";
-import {Meetings} from "./Meetings";
+import {Meetings} from "./meetings/Meetings";
 import {MainPage} from "./MainPage";
-import {absoluteUrl, openapiBaseUrl} from "./host"
+import {openapiBaseUrl} from "./host"
 import {
     Box, createTheme,
     Container,

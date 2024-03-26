@@ -7,6 +7,8 @@ import {ParticipationMode} from "./ParticipationMode";
 import {ParticipationIntervalComponent} from "./ParticipationInterval";
 import {ParticipationLanguage} from "./ParticipationLanguage";
 import {InterestsDialogueComponent} from "./UserInterests";
+import {useNavigate} from "react-router-dom";
+import {CurrentSubscriptionsNotice} from "../clubs/CurrentSubscriptionsNotice";
 
 const aalimProfile = {
     firstName: "Алексей",
@@ -45,12 +47,7 @@ const ProfileComponent = (props: ProfileComponentProps) => {
     return (
         <Box sx={{borderRadius: '25px'}}>
             <Stack direction="column" spacing={3} justifyContent="flex-start">
-                <PaddedPaper>
-                    <Stack direction="row" sx={{justifyContent: 'space-between', alignItems: 'center'}}>
-                        <Typography variant="body1">Вы не подписаны ни на одно мероприятие</Typography>
-                        <Button variant="contained">Подробнее</Button>
-                    </Stack>
-                </PaddedPaper>
+                <CurrentSubscriptionsNotice/>
                 <UserPersonal userId={res.id} name={`${res.last_name} ${res.first_name}`} avatar={res.avatar}
                               telegram={res.tg_login} about={res.about_me}/>
                 <ParticipationMode participationMode={res.meeting_mode} city={userProfile.city}/>
@@ -68,9 +65,7 @@ export const Profile = () => {
 
     useEffect(() => {
         UsersService.getMyProfile().then(json => {
-            const userData = JSON.parse(json as unknown as string) as User
-            console.log('try to load', userData)
-            setUserData(userData)
+            setUserData(json)
             setLoading(false)
         })
     }, [])

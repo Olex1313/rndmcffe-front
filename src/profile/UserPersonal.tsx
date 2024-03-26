@@ -20,7 +20,7 @@ export const UserPersonal = (props: UserPersonalProps) => {
     const onSubmit = (aValue: string) => {
         UsersService.updateMyProfile({
             about_me: aValue
-        }).then((aUser) => setAbout(aUser.about_me))
+        }).then((aUser: User) => setAbout(aUser.about_me))
     }
 
     const handleFileUpload = (event: { target: { files: FileList | null } }) => {
@@ -33,12 +33,12 @@ export const UserPersonal = (props: UserPersonalProps) => {
 
         reader.onloadend = function () {
             UsersService.addPhoto(file).then(() => {
-                UsersService.getMyProfile().then(json => {
+                UsersService.getMyProfile().then((json: User) => {
                     console.log('image uploaded successfully %s', file.type)
                     const userData = JSON.parse(json as unknown as string) as User
                     setUserAvatar(userData.avatar)
                 })
-            }).catch((reason) => {
+            }).catch((reason: any) => {
                 let message
                 if (reason.body.includes("NSFW_DETECTED")) {
                     message = "Подобное фото нельзя использвоать, попробуйте другое или обратитесь в поддержку"
@@ -67,7 +67,7 @@ export const UserPersonal = (props: UserPersonalProps) => {
                     overflow: 'hidden'
                 }}
                 />
-                <Button variant="contained" component="label">
+                <Button variant="contained" component="label" size="small">
                     Обновить Фото
                     <input hidden accept="image/*" multiple type="file" onChange={handleFileUpload}/>
                 </Button>

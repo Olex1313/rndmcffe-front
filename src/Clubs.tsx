@@ -11,7 +11,7 @@ type ClubIdConsumer = (clubId: number) => void
 const ClubComponent = (userClub: UserClub, onSubscribe: ClubIdConsumer, onUnsubscribe: ClubIdConsumer) => {
     return <Grid item xs={6} md={6}>
         <PaddedPaper>
-            <CardMedia sx={{height: 140}} image={userClub.image_url || "hse-logo.jpg"}/>
+            <CardMedia component="img" height="194" image="hse-logo.svg"/>
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                     {userClub.name}
